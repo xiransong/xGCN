@@ -1,6 +1,6 @@
-PROJECT_ROOT='/media/xreco/jianxun/xGCN'
-# ALL_DATA_ROOT='/media/xreco/jianxun/xgcn_data'
-ALL_DATA_ROOT='/media/xreco/DEV/xiran/data/social_and_user_item'
+PROJECT_ROOT='/media/data/xGCN' 
+ALL_DATA_ROOT='/media/data/xGCN_data'
+DATASET='xbox-100m'
 
 ALL_DATASETS_ROOT=$ALL_DATA_ROOT'/datasets'
 
@@ -17,11 +17,17 @@ ALL_DATASETS_ROOT=$ALL_DATA_ROOT'/datasets'
 
 # output: numpy array, [[src01, pos, neg1, ..., negk], [src02, ... ], ... ]
 
-DATASET='xbox-100m'
+
 DATA_ROOT=$ALL_DATASETS_ROOT'/instance_'$DATASET
 
-python ../data/handle_labelled_eval_set.py $PROJECT_ROOT \
-    --file_input '/media/xreco/DEV/socgraph/production_full/social_graph_v2/test' \
+python data/handle_labelled_eval_set.py $PROJECT_ROOT \
+    --file_input '/media/data/DEV/refactor/xbox/xfriend_auto_pipeline/output_100m/training_instances_xbox_usconsole_directed/valid' \
+    --file_output $DATA_ROOT'/valid-1-99.pkl' \
+    --file_output_2 $DATA_ROOT'/valid-1-99-pos_edges.pkl' \
+
+
+python data/handle_labelled_eval_set.py $PROJECT_ROOT \
+    --file_input '/media/data/DEV/refactor/xbox/xfriend_auto_pipeline/output_100m/training_instances_xbox_usconsole_directed/test' \
     --file_output $DATA_ROOT'/test-1-99.pkl' \
     --file_output_2 $DATA_ROOT'/test-1-99-pos_edges.pkl' \
 

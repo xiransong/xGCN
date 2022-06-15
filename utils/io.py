@@ -2,11 +2,28 @@ import pickle as pkl
 import json
 import yaml
 import gc
+import os
+from datetime import datetime
 
 
 def save_pickle(filename, obj):
-    with open(filename, "wb") as f:
-        pkl.dump(obj, f)
+    # with open(filename, "wb") as f:
+    #     pkl.dump(obj, f)
+    save_pkl_obj(obj, filename, protocol=4)
+
+def save_pkl_obj(v, filename,  protocol=None):
+    print('saving {0} at {1}'.format(os.path.basename(filename),  datetime.now().strftime("%d/%m/%Y %H:%M:%S")))
+    with open(filename, 'wb') as f:
+        # pkl.dump(v, f)
+        ##--  also try this:  pickletools.optimize()
+        ##--  https://towardsdatascience.com/the-power-of-pickletools-handling-large-model-pickle-files-7f9037b9086b
+        if protocol is not None:
+            p = pkl.Pickler(f, protocol=protocol)  ## before Py3.8, default is 3;  otherwise default is 4.  protocal=4 supports big object
+        else:
+            p = pkl.Pickler(f)
+        p.fast = True
+        p.dump(v)
+    print('finish saving {0} at {1}'.format(os.path.basename(filename),  datetime.now().strftime("%d/%m/%Y %H:%M:%S")))
 
 
 def load_pickle(filename):
