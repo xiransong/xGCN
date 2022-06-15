@@ -1,16 +1,16 @@
-PROJECT_ROOT='/media/xreco/jianxun/xGCN'
-# ALL_DATA_ROOT='/media/xreco/jianxun/xgcn_data'
-ALL_DATA_ROOT='/media/xreco/DEV/xiran/data/social_and_user_item'
+PROJECT_ROOT='/media/data/xGCN' 
+ALL_DATA_ROOT='/media/data/xGCN_data'
+DATASET='xbox-100m'
 
 CONFIG_ROOT=$PROJECT_ROOT'/config'
 ALL_DATASETS_ROOT=$ALL_DATA_ROOT'/datasets'
 ALL_RESULTS_ROOT=$ALL_DATA_ROOT'/model_outputs'
 
-DEVICE='cuda:0'
+DEVICE='cpu'
 EMB_TABLE_DEVICE='cpu'
 
 #########################################
-DATASET='xbox-100m'
+
 SEED=2022
 T=2
 K=10
@@ -38,7 +38,7 @@ python $PROJECT_ROOT'/'main/main.py $PROJECT_ROOT \
     --emb_table_device $EMB_TABLE_DEVICE \
     --validation_method 'one_pos_k_neg' \
     --mask_nei_when_validation 0 \
-    --file_validation $DATA_ROOT'/test-1-99.pkl' \
+    --file_validation $DATA_ROOT'/valid-1-99.pkl' \
     --test_method 'one_pos_k_neg' \
     --mask_nei_when_test 0 \
     --file_test $DATA_ROOT'/test-1-99.pkl' \
