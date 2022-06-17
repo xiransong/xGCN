@@ -6,8 +6,8 @@ emb_table_device: 'cuda:0'
 
 convergence_threshold: 30
 val_freq: 1
-key_score_metric: r100
-epochs: 300
+key_score_metric: n20
+epochs: 100
 
 train_batch_size: 4096
 ensure_neg_is_not_neighbor: 0

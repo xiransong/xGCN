@@ -1,6 +1,6 @@
 PROJECT_ROOT='/media/data/xGCN' 
 ALL_DATA_ROOT='/media/data/xGCN_data'
-DATASET='xbox-100m'
+DATASET='xbox-100m-recent'
 
 ALL_DATASETS_ROOT=$ALL_DATA_ROOT'/datasets'
 
@@ -21,13 +21,13 @@ ALL_DATASETS_ROOT=$ALL_DATA_ROOT'/datasets'
 DATA_ROOT=$ALL_DATASETS_ROOT'/instance_'$DATASET
 
 python data/handle_labelled_eval_set.py $PROJECT_ROOT \
-    --file_input '/media/data/DEV/refactor/xbox/xfriend_auto_pipeline/output_100m/training_instances_xbox_usconsole_directed/valid' \
+    --file_input '/media/data/xGCN_data/datasets/rawdata-xbox-100m/valid' \
     --file_output $DATA_ROOT'/valid-1-99.pkl' \
     --file_output_2 $DATA_ROOT'/valid-1-99-pos_edges.pkl' \
 
 
 python data/handle_labelled_eval_set.py $PROJECT_ROOT \
-    --file_input '/media/data/DEV/refactor/xbox/xfriend_auto_pipeline/output_100m/training_instances_xbox_usconsole_directed/test' \
+    --file_input '/media/data/xGCN_data/datasets/rawdata-xbox-100m/test' \
     --file_output $DATA_ROOT'/test-1-99.pkl' \
     --file_output_2 $DATA_ROOT'/test-1-99-pos_edges.pkl' \
 

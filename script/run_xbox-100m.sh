@@ -1,6 +1,6 @@
 PROJECT_ROOT='/media/data/xGCN' 
 ALL_DATA_ROOT='/media/data/xGCN_data'
-DATASET='xbox-100m'
+DATASET='xbox-100m-recent'
 
 CONFIG_ROOT=$PROJECT_ROOT'/config'
 ALL_DATASETS_ROOT=$ALL_DATA_ROOT'/datasets'
@@ -26,6 +26,16 @@ LOG_FILE=$RESULTS_ROOT'/log.txt'
 echo "[begin at $(date)]" > $LOG_FILE
 echo "results dir: "$RESULTS_ROOT
 
+
+source /anaconda/bin/activate 
+eval "$(conda shell.bash hook)" 
+conda activate xgcn
+
+bash script/process_data/handle_csr_graph.sh 
+
+bash script/process_data/handle_labelled_eval_set.sh 
+
+
 # if the memory is enough, set --use_numba_csr_mult 0
 
 python $PROJECT_ROOT'/'main/main.py $PROJECT_ROOT \
@@ -49,7 +59,7 @@ python $PROJECT_ROOT'/'main/main.py $PROJECT_ROOT \
     --renew_and_prop_freq $T --K $K --endure 1 \
     --emb_dim 32 \
     --emb_init_std 1.0 \
-    --epochs 120 --convergence_threshold 4 \
+    --epochs 100 --convergence_threshold 4 \
     --edge_sample_ratio 0.01 \
     # >> $LOG_FILE
 
