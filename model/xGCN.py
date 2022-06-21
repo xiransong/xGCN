@@ -124,7 +124,14 @@ class xGCN(BaseEmbeddingModel):
             d_dst = all_degrees[E_dst]
             
             edge_weights = torch.FloatTensor(1 / (d_src * d_dst)).sqrt()
-            del all_degrees, d_src, d_dst
+            del d_src, d_dst
+            
+            if 'zero_degree_zero_emb' in self.config and self.config['zero_degree_zero_emb']:
+                self.zero_degree_nodes = all_degrees == 0
+                self.num_zero_degree = self.zero_degree_nodes.sum().item()
+                print("## using zero_degree_zero_emb, num_zero_degree:", 
+                      self.zero_degree_nodes.sum().item(), ", num_nodes:", self.num_nodes)
+            del all_degrees
             
             if self.config['use_numba_csr_mult']:
                 self.indptr = indptr
@@ -199,6 +206,7 @@ class xGCN(BaseEmbeddingModel):
         print("    .abs().max():", emb_abs.max())
         print("    .abs().mean():", emb_abs.mean())
         print("    .std():", table.std())
+        print("table:", table)
     
     def _calc_pprgo_out_emb(self, nids):
         top_nids = self.nei[nids]
@@ -400,6 +408,10 @@ class xGCN(BaseEmbeddingModel):
                 input_table=self.emb_table,
                 output_table=self.out_emb_table
             )
+        
+        if 'zero_degree_zero_emb' in self.config and self.config['zero_degree_zero_emb']:
+            self.out_emb_table[self.zero_degree_nodes] = 0
+        
         self._print_emb_info(self.out_emb_table, 'out_emb_table')
         
         if self.dataset_type == 'user-item':

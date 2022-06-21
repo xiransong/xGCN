@@ -52,7 +52,7 @@ python $PROJECT_ROOT'/'main/main.py $PROJECT_ROOT \
     --test_method 'one_pos_k_neg' \
     --mask_nei_when_test 0 \
     --file_test $DATA_ROOT'/test-1-99.pkl' \
-    --prop_type 'lightgcn' --num_gcn_layers 1 --use_numba_csr_mult 1 \
+    --prop_type 'lightgcn' --num_gcn_layers 1 --use_numba_csr_mult 1  --zero_degree_zero_emb 1 \
     --use_special_dnn 1 \
     --dnn_arch '[torch.nn.Linear(32, 1024), torch.nn.Tanh(), torch.nn.Linear(1024, 1024), torch.nn.Tanh(), torch.nn.Linear(1024, 32)]' \
     --scale_net_arch '[torch.nn.Linear(32, 32), torch.nn.Tanh(), torch.nn.Linear(32, 1), torch.nn.Sigmoid()]' \
