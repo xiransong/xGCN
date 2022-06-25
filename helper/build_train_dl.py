@@ -50,7 +50,8 @@ def _build_gnn_train_dl(config, data):
             info, E_src, E_dst,
             batch_size=batch_size, num_neg=num_neg, ratio=ratio,  # for each epoch, sample ratio*num_edges edges from all edges
             ensure_neg_is_not_neighbor=ensure_neg_is_not_neighbor, 
-            csr_indptr=indptr, csr_indices=indices
+            csr_indptr=indptr, csr_indices=indices, 
+            neg_sample_from_active_nodes=True if 'neg_sample_from_active_nodes' in config and config['neg_sample_from_active_nodes'] else False
         )
     
     elif config['train_dl'] == 'EdgeBased_Full_TrainDataLoader':

@@ -85,6 +85,7 @@ def _parse_arguments():
     parser.add_argument("--cancel_renew", type=int)
     parser.add_argument("--use_item2item_graph_for_item_prop", type=int)
     parser.add_argument("--zero_degree_zero_emb", type=int)
+    parser.add_argument("--neg_sample_from_active_nodes", type=int)
     
     parser.add_argument("--K", type=int)
     

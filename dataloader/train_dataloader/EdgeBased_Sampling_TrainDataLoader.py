@@ -8,7 +8,9 @@ class EdgeBased_Sampling_TrainDataLoader:
     
     def __init__(self, info, E_src: np.ndarray, E_dst: np.ndarray,
                  batch_size, num_neg=1, ratio=0.1,
-                 ensure_neg_is_not_neighbor=False, csr_indptr=None, csr_indices=None):
+                 ensure_neg_is_not_neighbor=False, csr_indptr=None, csr_indices=None,
+                 neg_sample_from_active_nodes=False
+        ):
         # for each epoch, sample ratio*num_edges edges from all edges
         self.E_src = E_src
         self.E_dst = E_dst
@@ -31,6 +33,13 @@ class EdgeBased_Sampling_TrainDataLoader:
         if self.ensure_neg_is_not_neighbor:
             self.csr_indptr = csr_indptr
             self.csr_indices = csr_indices
+        
+        self.neg_sample_from_active_nodes = neg_sample_from_active_nodes
+        if neg_sample_from_active_nodes:
+            all_degrees = csr_indptr[1:] - csr_indptr[:-1]
+            self.active_nodes = np.argwhere(all_degrees>0).reshape(-1)
+            print("## using neg_sample_from_active_nodes, active nodes:",  self.active_nodes.shape, ", num nodes from indptr:", len(all_degrees)) 
+
     
     def _generate_strict_neg(self, src):
         if self.num_neg == 1:
@@ -64,10 +73,14 @@ class EdgeBased_Sampling_TrainDataLoader:
         if self.num_neg < 1:
             neg = None
         else:
-            if self.ensure_neg_is_not_neighbor:
-                neg = torch.LongTensor(self._generate_strict_neg(src.numpy()))
+            if not self.neg_sample_from_active_nodes:
+                if self.ensure_neg_is_not_neighbor:
+                    neg = torch.LongTensor(self._generate_strict_neg(src.numpy())) 
+                else:
+                    neg = torch.randint(self.neg_low, self.neg_high, 
+                                        (len(src), self.num_neg)).squeeze()
             else:
-                neg = torch.randint(self.neg_low, self.neg_high, 
-                                    (len(src), self.num_neg)).squeeze()
+                neg_ind = np.random.choice(self.active_nodes, size=(len(src), self.num_neg))
+                neg = torch.LongTensor(neg_ind)
         
         return src, pos, neg
