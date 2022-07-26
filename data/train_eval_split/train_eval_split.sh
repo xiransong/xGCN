@@ -7,8 +7,6 @@ INPUT_DATA_ROOT='/home/sxr/data/social_and_user_item/raw_datasets/MovieLens-10m/
 DATASET_NAME='MovieLens-10m'
 OUTPUT_DATA_ROOT='/home/sxr/data/social_and_user_item/datasets/instance_'$DATASET_NAME
 
-rm -r $OUTPUT_DATA_ROOT
-
 SEED=2022
 
 python split_pos_edges.py $PROJECT_ROOT \

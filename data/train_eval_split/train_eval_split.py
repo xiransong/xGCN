@@ -103,7 +103,7 @@ def main():
     cf['num_val_edges'] = len(val_edges)
     cf['num_test_edges'] = len(test_edges)
     cf['num_train_edges'] = g.num_edges()
-    io.save_yaml(osp.join(output_data_root, 'config-split_pos_edges.yaml'), cf)
+    io.save_yaml(osp.join(output_data_root, 'config-train_eval_split.yaml'), cf)
     
     info = {
         'dataset_type': dataset_type,
@@ -117,6 +117,6 @@ def main():
 
 if __name__ == '__main__':
     
-    setproctitle.setproctitle('generate_eval_set-' + 
+    setproctitle.setproctitle('train_eval_split-' + 
                               time.strftime("%d%H%M%S", time.localtime(time.time())))
     main()
