@@ -69,6 +69,7 @@ class BaseEmbeddingModel:
         self.dataset_type = self.info['dataset_type']
         if self.dataset_type == 'user-item':
             self.num_users = self.info['num_users']
+        self.num_nodes = self.info['num_nodes']
         
         # for evaluation:
         self.out_emb_table = None

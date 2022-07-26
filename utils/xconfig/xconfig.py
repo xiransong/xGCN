@@ -3,11 +3,11 @@ from .parse import parse_arg_str_list
 
 
 FIELD_SEP = '|'
-ROOT_FIELD= 'root'
+ROOT_FIELD= ''
 
 
-def join(field_str1, field_str2):
-    return field_str1 + FIELD_SEP + field_str2
+def join(*field_str):
+    return FIELD_SEP.join(field_str)
 
 
 class xConfig:
@@ -33,6 +33,7 @@ class xConfig:
         return self.get(field_str)
     
     def get(self, field_str):
+        field_str = field_str.strip(FIELD_SEP)
         if field_str == ROOT_FIELD:
             return self.d
         else:
@@ -46,10 +47,11 @@ class xConfig:
         utils.print_dict(self.d)
     
     def _get_last_dict_and_key(self, field_str):
-        lis = field_str.split(FIELD_SEP)
+        lis = field_str.strip(FIELD_SEP).split(FIELD_SEP)
         _d = self.d
         for name in lis[:-1]:
             if name not in _d:
+                print("## KeyError:", field_str)
                 raise KeyError
             _d = _d[name]
         return _d, lis[-1]

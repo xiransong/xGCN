@@ -62,7 +62,7 @@ class Trainer:
             
             self.data['epoch'] = epoch
             
-            if 'not_eval' in self.config and self.config['not_eval']:
+            if self.config['not_eval']:
                 if epoch in eval(self.config['epochs_need_save']):
                     print("## save model at epoch", epoch)
                     self.model.prepare_for_eval()
@@ -129,7 +129,7 @@ class Trainer:
         self.timer.save_record(root=self.results_root)
         
     def test(self):
-        if 'not_eval' in self.config and self.config['not_eval']:
+        if self.config['not_eval']:
             return
         else:
             print("test...")

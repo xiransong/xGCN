@@ -26,7 +26,12 @@ class Block_LightGCNConv(torch.nn.Module):
 class Block_LightGCN(BaseGNNModel):
     
     def __init__(self, config, data):
-        super().__init__(config, data)        
+        super().__init__(config, data)
+        self.root_config = config
+        self.config_field_name = 'Block_LightGCN'
+        
+        self.local_config = self.root_config[self.config_field_name]
+        
         self.gnn = Block_LightGCNConv()
         
         # add edge_weights to the graph
@@ -38,18 +43,23 @@ class Block_LightGCN(BaseGNNModel):
         edge_weights = (1 / (d1 * d2)).sqrt()
         g.edata['ew'] = edge_weights
         self.g = g
-        self._gnn = LightGCNConv(config['num_gcn_layers'], stack_layers=False)
+        self._gnn = LightGCNConv(self.local_config['num_gcn_layers'], stack_layers=False)
+
+        self.param_list = self.base_emb_table.get_param_list()
     
+    def get_param_list(self):
+        return self.param_list
+        
     def save(self, root):
         torch.save(self.out_emb_table, osp.join(root, "out_emb_table.pt"))
 
     def prepare_for_eval(self):
-        if len(eval(self.config['num_layer_sample'])) != 0:  # use neighbor sampling
+        if len(eval(self.local_config['num_layer_sample'])) != 0:  # use neighbor sampling
             node_collator = self.data['node_collator']
-            self.out_emb_table = torch.empty(self.base_emb_table.weight.shape, dtype=torch.float32).to(self.device)
-            dl = torch.utils.data.DataLoader(dataset=torch.arange(self.info['num_nodes']), 
-                                            batch_size=8192,
-                                            collate_fn=node_collator.collate)
+            self.out_emb_table = torch.empty(self.base_emb_table.shape, dtype=torch.float32).to(self.device)
+            dl = torch.utils.data.DataLoader(dataset=torch.arange(self.num_nodes),
+                                             batch_size=8192,
+                                             collate_fn=node_collator.collate)
             
             for input_nids, output_nids, blocks in tqdm(dl, desc="get all gnn output embs"):
                 blocks = [block.to(self.device) for block in blocks]
@@ -59,8 +69,8 @@ class Block_LightGCN(BaseGNNModel):
                 self.out_emb_table[output_nids] = output_embs
             
         else:
-            self.out_emb_table = self._gnn(self.g, self.base_emb_table.cpu().weight)
-            self.base_emb_table = self.base_emb_table.to(self.device)
+            X = self.base_emb_table.infer_all_emb().cpu()
+            self.out_emb_table = self._gnn(self.g, X)
             
         if self.dataset_type == 'user-item':
             self.target_emb_table = self.out_emb_table[self.num_users:]

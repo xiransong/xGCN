@@ -16,6 +16,7 @@ def build_model(config, data):
         'node2vec': Node2vecWrapper,
         'lightgcn': LightGCN,
         'block_lightgcn': Block_LightGCN,
+        'Block_LightGCN': Block_LightGCN,
         'block_simplex': Block_SimpleX,
         'xgcn': xGCN,
         'ultragcn': UltraGCN,

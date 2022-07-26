@@ -26,12 +26,16 @@ def _build_node2vec_train_dl(config, data):
 
 
 def _build_gnn_train_dl(config, data):
-    data_root = config['data_root']
+    root_config = config
+    train_dl_name = root_config['train_dl']
+    local_config = root_config[train_dl_name]
+    
+    data_root = root_config['data_root']
     info = data['info']
     
-    batch_size = config['train_batch_size']
-    num_neg = config['num_neg']
-    ensure_neg_is_not_neighbor = config['ensure_neg_is_not_neighbor']
+    batch_size = local_config['train_batch_size']
+    num_neg = local_config['num_neg']
+    ensure_neg_is_not_neighbor = local_config['ensure_neg_is_not_neighbor']
     
     indptr = io.load_pickle(osp.join(data_root, 'train_csr_indptr.pkl'))
     src_indices = io.load_pickle(osp.join(data_root, 'train_csr_src_indices.pkl'))
@@ -40,12 +44,12 @@ def _build_gnn_train_dl(config, data):
     E_src = src_indices
     E_dst = indices
     
-    if 'edge_sample_ratio' in config:
-        ratio = config['edge_sample_ratio']
+    if 'edge_sample_ratio' in local_config:
+        ratio = local_config['edge_sample_ratio']
     else:
         ratio = 0.1
     
-    if config['train_dl'] == 'EdgeBased_Sampling_TrainDataLoader':    
+    if train_dl_name == 'EdgeBased_Sampling_TrainDataLoader':    
         train_dl = EdgeBased_Sampling_TrainDataLoader(
             info, E_src, E_dst,
             batch_size=batch_size, num_neg=num_neg, ratio=ratio,  # for each epoch, sample ratio*num_edges edges from all edges
@@ -53,7 +57,7 @@ def _build_gnn_train_dl(config, data):
             csr_indptr=indptr, csr_indices=indices
         )
     
-    elif config['train_dl'] == 'EdgeBased_Full_TrainDataLoader':
+    elif train_dl_name == 'EdgeBased_Full_TrainDataLoader':
         E_src = io.load_pickle(osp.join(data_root, 'train_csr_src_indices.pkl'))
         E_dst = io.load_pickle(osp.join(data_root, 'train_csr_indices.pkl'))
         
@@ -64,14 +68,14 @@ def _build_gnn_train_dl(config, data):
             csr_indptr=indptr, csr_indices=indices
         )
     
-    elif config['train_dl'] == 'NodeBased_TrainDataLoader':
+    elif train_dl_name == 'NodeBased_TrainDataLoader':
         train_dl = NodeBased_TrainDataLoader(
             info=info, num_edges_per_epoch=int(info['num_edges'] * ratio),
             batch_size=batch_size,
             train_csr_indptr=indptr, train_csr_indices=indices
         )
     
-    elif config['train_dl'] == 'EdgeBased_Sampling_Block_TrainDataLoader':
+    elif train_dl_name == 'EdgeBased_Sampling_Block_TrainDataLoader':
         # build node_collate_graph
         g_src = io.load_pickle(osp.join(data_root, 'train_undi_csr_src_indices.pkl'))
         g_dst = io.load_pickle(osp.join(data_root, 'train_undi_csr_indices.pkl'))
@@ -82,9 +86,9 @@ def _build_gnn_train_dl(config, data):
             batch_size,
             num_neg, ratio,
             node_collate_graph,
-            num_gcn_layer=config['num_gcn_layers'],
-            num_layer_sample=eval(config['num_layer_sample']),
-            num_workers=config['num_workers']
+            num_gcn_layer=local_config['num_gcn_layers'],
+            num_layer_sample=eval(local_config['num_layer_sample']),
+            num_workers=local_config['num_workers']
         )
 
         data['node_collate_graph'] = node_collate_graph
