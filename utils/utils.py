@@ -9,8 +9,8 @@ import dgl
 class ReIndexDict:
     
     def __init__(self):
-        self.d = {}
-        self.rev_d = None
+        self.d = {}      # map old id to int
+        self.rev_d = []  # map int to old id
         self.cnt = 0
         
     def __getitem__(self, old_id):
@@ -19,17 +19,18 @@ class ReIndexDict:
         else:
             new_id = self.cnt
             self.d[old_id] = new_id
+            self.rev_d.append(old_id)
             self.cnt += 1
             return new_id
-        
+    
+    def __len__(self):
+        assert self.cnt == len(self.d), self.cnt == len(self.rev_d)
+        return self.cnt
+    
     def get_old2new_dict(self):
         return self.d
     
-    def get_new2old_dict(self):
-        if self.rev_d is None:
-            self.rev_d = {}
-            for old_id in self.d:
-                self.rev_d[self.d[old_id]] = old_id
+    def get_new2old_list(self):
         return self.rev_d
 
 
@@ -82,9 +83,14 @@ def ensure_dir(path):
     pathlib.Path(path).mkdir(parents=True, exist_ok=True)
 
 
-def print_dict(d):
+def print_dict(d, indent=0):
     for key in d:
-        print(key, ":", d[key])
+        _d = d[key]
+        if isinstance(_d, dict):
+            print('  '*indent + str(key) + ' : ')
+            print_dict(_d, indent+1)
+        else:
+            print('  '*indent + str(key) + ' : ' + str(_d))
 
 
 @numba.jit(nopython=True)
@@ -94,6 +100,18 @@ def find_first(item, vec):
         if item == vec[i]:
             return i
     return -1
+
+
+def merge_list_dict(dict1, dict2):
+    keys = set(dict1.keys()) | set(dict2.keys())
+    d = {}
+    for key in keys:
+        d[key] = []
+        if key in dict1:
+            d[key].extend(dict1[key])
+        if key in dict2:
+            d[key].extend(dict2[key])
+    return d
 
 
 def combine_dict_list_and_calc_mean(dict_list, weights=None):
