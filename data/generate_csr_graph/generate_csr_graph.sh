@@ -12,5 +12,5 @@ python generate_csr_graph.py $PROJECT_ROOT \
     'file_csr_indices:str:'$DATA_ROOT'/train_csr_indices.pkl' \
     'file_csr_src_indices:str:'$DATA_ROOT'/train_csr_src_indices.pkl' \
     'file_undi_csr_indptr:str:'$DATA_ROOT'/train_undi_indptr.pkl' \
-    'file_undi_csr_indices:str:'$DATA_ROOT'/train_undi_csr_indicies.pkl' \
+    'file_undi_csr_indices:str:'$DATA_ROOT'/train_undi_csr_indices.pkl' \
     'file_undi_csr_src_indices:str:'$DATA_ROOT'/train_undi_csr_src_indices.pkl' \

@@ -108,7 +108,7 @@ def main():
     info = {
         'dataset_type': dataset_type,
         'num_nodes': train_graph.num_nodes(),
-        'num_users:': raw_graph_info['num_users'],
+        'num_users': raw_graph_info['num_users'],
         'num_items': raw_graph_info['num_items'],
         'num_edges': train_graph.num_edges()
     }
