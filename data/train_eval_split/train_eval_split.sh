@@ -1,7 +1,7 @@
 PROJECT_ROOT='/home/sxr/code/xgcn'
 
 # edges
-INPUT_DATA_ROOT='/home/sxr/data/social_and_user_item/raw_datasets/MovieLens-10m/processed/'
+INPUT_DATA_ROOT='/home/sxr/data/social_and_user_item/raw_datasets/MovieLens-20m/processed/'
 
 # dir to save the train/eval edges
 DATASET_NAME='MovieLens-10m'
@@ -9,7 +9,7 @@ OUTPUT_DATA_ROOT='/home/sxr/data/social_and_user_item/datasets/instance_'$DATASE
 
 SEED=2022
 
-python split_pos_edges.py $PROJECT_ROOT \
+python train_eval_split.py $PROJECT_ROOT \
     'seed:int:'$SEED \
     'input_data_root:str:'$INPUT_DATA_ROOT \
     'output_data_root:str:'$OUTPUT_DATA_ROOT \
