@@ -518,8 +518,11 @@ class xGCN(BaseEmbeddingModel):
         if file_out_emb_table is None:
             file_out_emb_table = "out_emb_table.pt"
         torch.save(self.out_emb_table, osp.join(root, file_out_emb_table))
+        
+        self.export_embedding_as_npy(root)
 
-    def export_embedding_as_npy(self, root, is_user_item=False):
+    def export_embedding_as_npy(self, root):
+        is_user_item = True if self.dataset_type == 'user-item' else False
         out_embeddings = self.out_emb_table.cpu().detach().numpy()
         if not is_user_item:
             file_name = 'node_embedding.npy' 

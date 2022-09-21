@@ -45,7 +45,6 @@ class Trainer:
         
         def save_best_model():
             self.model.save(root=self.results_root)
-            self.model.export_embedding_as_npy(root=self.results_root, is_user_item=True)
             
         def load_best_model():
             self.model.load(root=self.results_root)
