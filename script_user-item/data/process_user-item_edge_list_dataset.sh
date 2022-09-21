@@ -1,4 +1,4 @@
-ALL_DATA_ROOT='/home/jialia/reco'
+ALL_DATA_ROOT='/media/xreco/jianxun/UniRec/data/cikmcup/valid.tsv'
 PROJECT_ROOT="$ALL_DATA_ROOT/xGCN"
 
 
