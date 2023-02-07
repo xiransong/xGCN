@@ -13,7 +13,7 @@ def GBP_propagation(indptr, indices, X: torch.FloatTensor, L, w, r, rmax, nr):
     
     print("# from_edges_to_csr")
     S = []
-    for E_src, E_dst, data in S_edges:
+    for E_src, E_dst, data in tqdm(S_edges):
         s_indptr, s_indices, values = from_edges_to_csr(E_src, E_dst, data, num_nodes)
         # S.append(
         #     torch.sparse_csr_tensor(
@@ -34,7 +34,7 @@ def GBP_propagation(indptr, indices, X: torch.FloatTensor, L, w, r, rmax, nr):
     
     print("# get_P")
     P = torch.zeros(size=X.shape, dtype=torch.float32).numpy()
-    for l in range(L + 1):
+    for l in tqdm(range(L + 1)):
         sum_SR = torch.zeros(size=X.shape, dtype=torch.float32).numpy()
         for t in range(L):
             # sum_SR += S[l-t] @ R[t]

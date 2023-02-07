@@ -37,7 +37,7 @@ class GBP(BaseEmbeddingModel):
             rmax=abs_mean * self.config['rmax_ratio'], # 1e-2
             nr=8,
         ).to(self.device)
-        import pdb; pdb.set_trace()
+        
         self.mlp = torch.nn.Sequential(
             *eval(self.config['dnn_arch'])
         ).to(self.device)

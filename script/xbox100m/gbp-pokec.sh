@@ -13,7 +13,7 @@ DATA_ROOT=$ALL_DATASETS_ROOT'/instance_'$DATASET
 
 ################
 SEED=1
-walk_length=2
+walk_length=6
 alpha=0.1
 rmax_ratio=0.01
 
