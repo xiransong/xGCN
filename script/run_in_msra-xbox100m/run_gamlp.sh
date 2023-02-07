@@ -36,16 +36,16 @@ python $PROJECT_ROOT'/'main/main.py $PROJECT_ROOT \
     --train_batch_size 1024 \
     --l2_reg_weight 0.0 \
     --loss_fn 'bpr_loss' \
-    --validation_method 'one_pos_whole_graph' \
-    --mask_nei_when_validation 1 \
-    --file_validation $DATA_ROOT'/test_edges-5000.pkl' --key_score_metric 'n20'  \
+    --validation_method 'one_pos_k_neg' \
+    --mask_nei_when_validation 0 \
+    --file_validation $DATA_ROOT'/test-1-99.pkl' --key_score_metric 'n20' \
     --test_method 'one_pos_whole_graph' \
     --mask_nei_when_test 1 \
     --file_test $DATA_ROOT'/test_edges-5000.pkl' \
-    --val_batch_size 10 \
+    --val_batch_size 128 \
     --test_batch_size 10 \
     --emb_dim 32 \
-    --epochs 999 --convergence_threshold 10 \
+    --epochs 999 --convergence_threshold 20 \
     --edge_sample_ratio 0.01 \
     --from_pretrained 1 --file_pretrained_emb $N2V_EMB \
     --freeze_emb 1 \
