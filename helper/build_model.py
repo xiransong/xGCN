@@ -46,11 +46,11 @@ def build_model(config, data):
         'gamlp_learnable_emb': GAMLP_learnable_emb,
     }
     
-    try:
-        from model.Node2vecWrapper import Node2vecWrapper
-        model_dict['node2vec'] = Node2vecWrapper
-    except:
-        pass
+    # try:
+    #     from model.Node2vecWrapper import Node2vecWrapper
+    #     model_dict['node2vec'] = Node2vecWrapper
+    # except:
+    #     pass
     
     model = model_dict[config['model']](config, data)
     

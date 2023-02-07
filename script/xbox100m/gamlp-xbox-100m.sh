@@ -42,7 +42,8 @@ python $PROJECT_ROOT'/'main/main.py $PROJECT_ROOT \
     --test_method 'one_pos_whole_graph' \
     --mask_nei_when_test 1 \
     --file_test $DATA_ROOT'/test_edges-5000.pkl' \
-    --train_batch_size 1024 \
+    --val_batch_size 10 \
+    --test_batch_size 10 \
     --emb_dim 32 \
     --epochs 120 --convergence_threshold 10 \
     --edge_sample_ratio 0.01 \
