@@ -25,7 +25,7 @@ bns=0
 RESULTS_DIR="gamlp/[seed$SEED][$GAMLP_type][gcn_layer$num_gcn_layers][h$hidden][n1$n_layers_1][n2$n_layers_2][pre_process$pre_process][residual$residual][bns$bns]"
 RESULTS_ROOT=$ALL_RESULTS_ROOT'/gnn_'$DATASET'/'$RESULTS_DIR
 
-N2V_EMB='/media/xreco/DEV/xiran/data/social_and_user_item/model_outputs/gnn_xbox-100m/node2vec/saved/out_emb_table.pt'
+N2V_EMB='/media/xreco/DEV/xiran/data/social_and_user_item/model_outputs/gnn_xbox-100m/fast_n2v/[0]/out_emb_table.pt'
 
 python $PROJECT_ROOT'/'main/main.py $PROJECT_ROOT \
     --config_file $CONFIG_ROOT'/gamlp-config.yaml' \

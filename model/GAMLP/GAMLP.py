@@ -19,22 +19,24 @@ class GAMLP(BaseEmbeddingModel):
         super().__init__(config, data)
         self.device = self.config['device']
 
-        assert self.config['from_pretrained'] and self.config['freeze_emb']
-        self.base_emb_table = init_emb_table(config, self.info['num_nodes'])
-        self.out_emb_table = torch.empty(self.base_emb_table.weight.shape, dtype=torch.float32)
-        
         data_root = self.config['data_root']
+        print("# load graph")
         E_src = io.load_pickle(osp.join(data_root, 'train_undi_csr_src_indices.pkl'))
         E_dst = io.load_pickle(osp.join(data_root, 'train_undi_csr_indices.pkl'))
         indptr = io.load_pickle(osp.join(data_root, 'train_undi_csr_indptr.pkl'))
         indices = E_dst
         
+        print("# calc edge_weights")
         all_degrees = indptr[1:] - indptr[:-1]
         d_src = all_degrees[E_src]
         d_dst = all_degrees[E_dst]
         
         edge_weights = np.sqrt((1 / (d_src * d_dst)))
-        del all_degrees, d_src, d_dst
+        del all_degrees, d_src, d_dst, E_src, E_dst
+        
+        assert self.config['from_pretrained'] and self.config['freeze_emb']
+        self.base_emb_table = init_emb_table(config, self.info['num_nodes'])
+        self.out_emb_table = torch.empty(self.base_emb_table.weight.shape, dtype=torch.float32)
         
         print("# propagation ...")
         X_0 = self.base_emb_table.weight
@@ -45,7 +47,9 @@ class GAMLP(BaseEmbeddingModel):
                 indptr, indices, edge_weights, emb_list[i].numpy(), X_out
             )
             emb_list.append(torch.FloatTensor(X_out).to(self.device))
+        del indptr, indices, edge_weights
         print("# propagation done")
+        
         # edge_weights = torch.FloatTensor(1 / (d_src * d_dst)).sqrt().to(self.device)
         # del indptr, all_degrees, d_src, d_dst
         
