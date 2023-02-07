@@ -3,7 +3,9 @@ from .model import JK_GAMLP, R_GAMLP
 from model.BaseEmbeddingModel import BaseEmbeddingModel, init_emb_table
 from model.module import dot_product, bpr_loss
 from utils import io
+from data.csr_graph_helper import numba_csr_mult_dense
 
+import numpy as np
 import torch
 import torch.nn.functional as F
 import dgl
@@ -25,32 +27,46 @@ class GAMLP(BaseEmbeddingModel):
         E_src = io.load_pickle(osp.join(data_root, 'train_undi_csr_src_indices.pkl'))
         E_dst = io.load_pickle(osp.join(data_root, 'train_undi_csr_indices.pkl'))
         indptr = io.load_pickle(osp.join(data_root, 'train_undi_csr_indptr.pkl'))
+        indices = E_dst
         
         all_degrees = indptr[1:] - indptr[:-1]
         d_src = all_degrees[E_src]
         d_dst = all_degrees[E_dst]
         
-        edge_weights = torch.FloatTensor(1 / (d_src * d_dst)).sqrt().to(self.device)
-        del indptr, all_degrees, d_src, d_dst
+        edge_weights = np.sqrt((1 / (d_src * d_dst)))
+        del all_degrees, d_src, d_dst
         
-        g = dgl.graph((E_src, E_dst)).to(self.device)
-        g.edata['ew'] = edge_weights
-        g.ndata['X_0'] = self.base_emb_table.weight
-        
-        transform = dgl.SIGNDiffusion(
-            k=self.config['num_gcn_layers'],
-            in_feat_name='X_0',
-            out_feat_name='X',
-            eweight_name='ew'
-        )
-        print("# SIGN diffusion...")
-        g = transform(g)
-        
-        emb_list = []
-        for i in range(1 + self.config['num_gcn_layers']):
-            emb_list.append(
-                g.ndata['X_' + str(i)]
+        print("# propagation ...")
+        X_0 = self.base_emb_table.weight
+        emb_list = [X_0]
+        for i in tqdm(range(self.config['num_gcn_layers'])):
+            X_out = np.zeros(X_0.shape, dtype=np.float32)
+            numba_csr_mult_dense(
+                indptr, indices, edge_weights, emb_list[i].numpy(), X_out
             )
+            emb_list.append(torch.FloatTensor(X_out).to(self.device))
+        print("# propagation done")
+        # edge_weights = torch.FloatTensor(1 / (d_src * d_dst)).sqrt().to(self.device)
+        # del indptr, all_degrees, d_src, d_dst
+        
+        # g = dgl.graph((E_src, E_dst)).to(self.device)
+        # g.edata['ew'] = edge_weights
+        # g.ndata['X_0'] = self.base_emb_table.weight
+        
+        # transform = dgl.SIGNDiffusion(
+        #     k=self.config['num_gcn_layers'],
+        #     in_feat_name='X_0',
+        #     out_feat_name='X',
+        #     eweight_name='ew'
+        # )
+        # print("# SIGN diffusion...")
+        # g = transform(g)
+        
+        # emb_list = []
+        # for i in range(1 + self.config['num_gcn_layers']):
+        #     emb_list.append(
+        #         g.ndata['X_' + str(i)]
+        #     )
         self.emb_table_list = emb_list  # embeddings of different times of propagation
         
         self.mlp = self.build_mlp()

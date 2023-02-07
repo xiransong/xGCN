@@ -14,7 +14,7 @@ DATA_ROOT=$ALL_DATASETS_ROOT'/instance_'$DATASET
 ################
 SEED=1
 GAMLP_type='GAMLP_JK'
-num_gcn_layers=1
+num_gcn_layers=$3
 hidden=512
 n_layers_1=2
 n_layers_2=2
