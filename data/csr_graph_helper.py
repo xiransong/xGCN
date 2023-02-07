@@ -37,6 +37,19 @@ def numba_csr_mult_dense(indptr, indices, data, X_in, X_out):
 
 
 @numba.jit(nopython=True, parallel=True)
+def numba_csr_mult_dense_and_add(indptr, indices, data, X_in, X_out):
+    for u in numba.prange(len(indptr) - 1):
+        start = indptr[u]
+        end = indptr[u + 1]
+        # if start == end:
+        #     X_out[u] = X_in[u]
+        # else:
+        u_nei = indices[start : end]
+        u_nei_data = data[start : end].reshape(-1, 1)
+        X_out[u] += (u_nei_data * X_in[u_nei]).sum(axis=-2)
+
+
+@numba.jit(nopython=True, parallel=True)
 def get_src_indices(indptr):
     num_nodes = len(indptr) - 1
     num_edges = indptr[-1]

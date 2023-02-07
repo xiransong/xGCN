@@ -1,4 +1,4 @@
-from .propagation import GBP_propagation
+from .propagation_scale import GBP_propagation
 from model.BaseEmbeddingModel import BaseEmbeddingModel, init_emb_table
 from model.module import dot_product, bpr_loss
 from utils import io
@@ -37,7 +37,7 @@ class GBP(BaseEmbeddingModel):
             rmax=abs_mean * self.config['rmax_ratio'], # 1e-2
             nr=8,
         ).to(self.device)
-        
+        import pdb; pdb.set_trace()
         self.mlp = torch.nn.Sequential(
             *eval(self.config['dnn_arch'])
         ).to(self.device)
