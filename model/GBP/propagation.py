@@ -27,6 +27,7 @@ def GBP_propagation(indptr, indices, X: torch.FloatTensor, L, w, r, rmax, nr):
     R = [torch.FloatTensor(R[i]) for i in range(len(R))]
     
     D = torch.FloatTensor(np.array(indptr[1:] - indptr[:-1], dtype=np.float32))
+    D += 1e-6
     Dr = (D**(r)).reshape(-1, 1)
     
     print("# get_P")
@@ -167,6 +168,7 @@ def get_Q_R(indptr, indices, X, L, r, rmax):
     ]
     
     D = np.array(indptr[1:] - indptr[:-1], dtype=np.float32)
+    D += 1e-6
     D_r = (D**(-r)).reshape(-1, 1)
     R = [D_r * X]
     R.extend([
