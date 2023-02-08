@@ -17,4 +17,6 @@ class OptiManager:
     
     def step(self):
         for opt in self.opt_list:
+            torch.nn.utils.clip_grad_norm_(opt.param_groups[0]['params'],
+                                           max_norm=1.0, norm_type=2.0)
             opt.step()
