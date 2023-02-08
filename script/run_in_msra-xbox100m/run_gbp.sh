@@ -29,16 +29,16 @@ python $PROJECT_ROOT'/'main/main.py $PROJECT_ROOT \
     --seed $SEED \
     --results_root $RESULTS_ROOT \
     --device $DEVICE \
-    --train_batch_size 1024 \
+    --train_batch_size 4096 \
     --l2_reg_weight 0.0 \
     --loss_fn 'bpr_loss' \
-    --validation_method 'one_pos_k_neg' \
-    --mask_nei_when_validation 0 \
-    --file_validation $DATA_ROOT'/test-1-99.pkl' --key_score_metric 'n20' \
+    --validation_method 'one_pos_whole_graph' \
+    --mask_nei_when_validation 1 \
+    --file_validation $DATA_ROOT'/val_edges-1000.pkl' --key_score_metric 'r100' \
     --test_method 'one_pos_whole_graph' \
     --mask_nei_when_test 1 \
     --file_test $DATA_ROOT'/test_edges-5000.pkl' \
-    --val_batch_size 128 \
+    --val_batch_size 10 \
     --test_batch_size 10 \
     --emb_dim 32 \
     --epochs 999 --convergence_threshold 20 \
