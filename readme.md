@@ -1,8 +1,10 @@
 This is an implementation for our TheWebConf 2023 paper: *xGCN: An Extreme Graph Convolutional Network for Large-scale Social Link Prediction*.
 
-**The current code is our original scripts. We release a refactored version with improved functionality and detailed documentation:** https\://xgcn.readthedocs.io/en/latest/index.html
+# Note
 
-To run xGCN and other baselines:
+**The current code is our original raw scripts. We release a refactored new version with improved functionality and detailed documentation:** https\://xgcn.readthedocs.io/en/latest/index.html
+
+We provide examples and scripts to run the models: https://xgcn.readthedocs.io/en/latest/user_guide/usage_examples/example_pokec_livejournal.html
 
 # 1. Install dependencies
 
@@ -12,7 +14,7 @@ The Python version is 3.8.12, other dependencies are listed in `requirements.txt
 
 * The .sh scripts to process datasets and run models are in the `script` directory.
 * You are expected to specify two paths: (1) `PROJECT_ROOT`, which is the root of this project (e.g. `/home/xxx/code/xgcn`); (2) `ALL_DATA_ROOT`, which is going to hold all the data including datasets and models' outputs (e.g. `/home/xxx/data/xgcn`).
-* The processed Pokec and LiveJournal datasets can be downloaded from here: https://data4public.blob.core.windows.net/xgcn/instance_pokec_and_livejournal.zip. The original datasets are from http://snap.stanford.edu/data/index.html.
+* The processed Pokec and LiveJournal datasets can be downloaded from here: https://drive.google.com/file/d/1lv-JkPmswYQ-YfKfRpNpoVh_N2XCiRQg/view?usp=drive_link. The original datasets are from http://snap.stanford.edu/data/index.html.
 * The data (.txt files) should be placed in the directory `$ALL_DATA_ROOT'/datasets/instance_[DATASET_NAME]'` as follows (e.g. the pokec dataset):
 
 ```
